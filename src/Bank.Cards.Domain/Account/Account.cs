@@ -46,6 +46,7 @@
             switch (domainEvent)
             {
                 case AccountCreatedEvent createdEvent:
+                    State.AccountNumber = createdEvent.AccountNumber;
                     break;
                 case AccountSnapShot snapshot:
                     State.Balance = snapshot.Balance;

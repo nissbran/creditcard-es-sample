@@ -1,6 +1,5 @@
 ﻿namespace Bank.Cards.Domain.Account.Events
 {
-    using System;
     using Infrastructure.Domain;
     using Newtonsoft.Json;
     using Schemas;
@@ -14,6 +13,6 @@
         public string Schema => AccountSchema.SchemaName;
 
         [JsonIgnore]
-        public DomainMetadata Metadata { get; set; }
+        public IDomainMetaData Metadata { get; set; }
     }
 }

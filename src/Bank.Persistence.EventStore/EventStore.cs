@@ -103,12 +103,12 @@
 
             //if (eventsToSave.Length < WriteBatchSize)
             //{
-                var result = await _connection.AppendToStreamAsync(
-                    stream: eventStreamId.ToString(),
-                    expectedVersion: expectedVersion,
-                    events: eventsToSave);
+            var result = await _connection.AppendToStreamAsync(
+                stream: eventStreamId.ToString(),
+                expectedVersion: expectedVersion,
+                events: eventsToSave);
 
-                return new StreamWriteResult(result.NextExpectedVersion);
+            return new StreamWriteResult(result.NextExpectedVersion);
             //}
 
             //using (var transaction = await _connection.StartTransactionAsync(eventStreamId.ToString(), expectedVersion))
@@ -142,7 +142,8 @@
             var metadataString = Encoding.UTF8.GetString(resolvedEvent.Event.Metadata);
             var eventString = Encoding.UTF8.GetString(resolvedEvent.Event.Data);
 
-            var metadata = JsonConvert.DeserializeObject<DomainMetadata>(metadataString, _jsonSerializerSettings);
+            var metadata = new DomainMetaDataWrapper(metadataString);
+            //var metadata = JsonConvert.DeserializeObject<DomainMetadata>(metadataString, _jsonSerializerSettings);
 
             _eventSchemas.TryGetValue(metadata.Schema, out var schema);
 
@@ -161,13 +162,19 @@
             var definition = schema.GetEventDefinition(domainEvent);
 
             var dataJson = JsonConvert.SerializeObject(domainEvent, _jsonSerializerSettings);
-            var metadataJson = JsonConvert.SerializeObject(new DomainMetadata
+            var metadataJson = new DomainMetaDataWrapper
             {
                 CorrelationId = commitId,
                 StreamId = domainEvent.StreamId,
                 Schema = domainEvent.Schema,
                 Created = DateTimeOffset.UtcNow
-            }, _jsonSerializerSettings);
+            }.ToString();
+
+
+            //    JsonConvert.SerializeObject(new DomainMetadata
+            //{
+            //    C
+            //}, _jsonSerializerSettings);
 
             var data = Encoding.UTF8.GetBytes(dataJson);
             var metadata = Encoding.UTF8.GetBytes(metadataJson);

@@ -36,7 +36,7 @@
             if (_definitionToType.TryGetValue(eventType, out var domainEvent))
                 return domainEvent;
 
-            throw new NotImplementedException();
+            return null;
         }
 
         public string GetEventDefinition(IDomainEvent domainEvent)

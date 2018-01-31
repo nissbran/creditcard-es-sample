@@ -6,6 +6,6 @@
 
         string Schema { get; }
 
-        DomainMetadata Metadata { get; set; }
+        IDomainMetaData Metadata { get; set; }
     }
 }

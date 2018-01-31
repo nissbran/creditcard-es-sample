@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class DomainMetadata
+    public class DomainMetadata : IDomainMetaData
     {
         public Guid CorrelationId { get; set; }
 

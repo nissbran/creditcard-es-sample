@@ -7,10 +7,10 @@
     using Domain.Account;
     using Domain.Account.Events;
     using Domain.Schemas;
-    using EventSourcing.Examples.EventStore.SnapshotJob;
     using EventStore.ClientAPI;
     using EventStore.ClientAPI.Common.Log;
     using EventStore.ClientAPI.SystemData;
+    using Infrastructure.Domain;
     using Infrastructure.EventStore;
     using Newtonsoft.Json;
     using Persistence.EventStore.Configuration;
@@ -71,10 +71,13 @@
             if (resolvedEvent.Event.EventNumber > 0 &&
                 resolvedEvent.Event.EventNumber % 500 == 0)
             {
-                var eventJsonData = Encoding.UTF8.GetString(resolvedEvent.Event.Data);
-                var accountDomainEvent = JsonConvert.DeserializeObject<AccountDomainEvent2>(eventJsonData);
+                var metaJsonData = Encoding.UTF8.GetString(resolvedEvent.Event.Metadata);
+                var eventMetaData = JsonConvert.DeserializeObject<DomainMetadata>(metaJsonData);
 
-                var account = await _repository.GetAccountById(accountDomainEvent.AggregateRootId);
+                if (eventMetaData.Schema != AccountSchema.SchemaName)
+                    return;
+
+                var account = await _repository.GetAccountById(Guid.Parse(eventMetaData.StreamId));
 
                 await _eventStore.SaveSnapshot(new AccountEventStreamId(account.Id), new AccountSnapShot()
                 {
@@ -83,7 +86,7 @@
                     SnapshotStreamVersion = account.StreamVersion
                 });
 
-                Console.WriteLine($"Account: {accountDomainEvent.AggregateRootId}, balance: {account.State.Balance}");
+                Console.WriteLine($"Account: {eventMetaData.StreamId}, balance: {account.State.Balance}");
 
                 Console.WriteLine($"Event {resolvedEvent.Event.EventNumber}: {resolvedEvent.Event.EventId}");
             }

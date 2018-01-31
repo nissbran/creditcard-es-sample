@@ -14,8 +14,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Bank.Persistence.EventStore\Bank.Persistence.EventStore.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Projections\" />
-  </ItemGroup>
 </Project>

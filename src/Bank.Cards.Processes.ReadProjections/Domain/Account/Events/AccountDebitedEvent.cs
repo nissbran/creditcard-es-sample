@@ -1,6 +1,5 @@
 ﻿namespace Bank.Cards.Processes.ReadProjections.Domain.Account.Events
 {
-    using Domain.Events;
     using Infrastructure.Domain;
 
     [EventName("AccountDebited")]

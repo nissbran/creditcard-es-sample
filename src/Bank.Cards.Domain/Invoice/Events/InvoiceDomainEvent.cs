@@ -13,6 +13,6 @@
         public string Schema => InvoiceSchema.SchemaName;
 
         [JsonIgnore]
-        public DomainMetadata Metadata { get; set; }
+        public IDomainMetaData Metadata { get; set; }
     }
 }

@@ -1,9 +1,8 @@
 ﻿namespace Bank.Cards.Test.EventStore.Write
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    //using System.Collections.Immutable;
-    //using System.Collections.Immutable;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
@@ -19,25 +18,23 @@
         private static Bank.Persistence.EventStore.EventStore _eventStore;
         private static AccountSnapshotRepository _accountSnapshotRepository;
 
-        private static readonly decimal[] Balances = new decimal[10]; 
+        private static readonly decimal[] Balances = new decimal[10];
 
-        private static readonly List<long>[] ReadTimings = new List<long>[]
-        {
-            new List<long>(),
-            new List<long>(),
-            new List<long>(),
-            new List<long>(),
-            new List<long>(),
-        };
+        private static ConcurrentBag<long>[] ReadTimings = CreateTimingsArray();
 
-        private static readonly List<long>[] WriteTimings = new List<long>[]
+        private static ConcurrentBag<long>[] WriteTimings = CreateTimingsArray();
+
+        private static ConcurrentBag<long>[] CreateTimingsArray()
         {
-            new List<long>(),
-            new List<long>(),
-            new List<long>(),
-            new List<long>(),
-            new List<long>(),
-        };
+            return new[]
+            {
+                new ConcurrentBag<long>(),
+                new ConcurrentBag<long>(),
+                new ConcurrentBag<long>(),
+                new ConcurrentBag<long>(),
+                new ConcurrentBag<long>(),
+            };
+        }
 
         static async Task Main(string[] args)
         {
@@ -79,6 +76,9 @@
 
                         Console.WriteLine($"Stream: {i}, Balance: {Balances[i]}, Read: {readTimings} ms, Write: {writeTimings} ms");
                     }
+
+                    ReadTimings = CreateTimingsArray();
+                    WriteTimings = CreateTimingsArray();
                 }
             });
 
@@ -95,7 +95,6 @@
 
             for (int i = 0; i <= 2000; i++)
             {
-                //var repository = new AccountSnapshotRepository(_eventStore);
                 //var repository2 = new AccountRepository(eventStore);
 
                 stopwatch.Start();
@@ -104,7 +103,6 @@
                 //var account2 = await repository2.GetAccountById(id);
 
                 ReadTimings[number].Add(stopwatch.ElapsedMilliseconds);
-                //Console.WriteLine($"Read Time: {stopwatch.ElapsedMilliseconds} ms");
                 stopwatch.Restart();
 
                 if (account == null)
@@ -113,7 +111,7 @@
                 }
                 else
                 {
-                    for (int y = 0; y <= 10; y++)
+                    for (int y = 0; y <= 100; y++)
                     {
                         account.AddEvent(new AccountDebitedEvent
                         {
@@ -133,7 +131,6 @@
                 WriteTimings[number].Add(stopwatch.ElapsedMilliseconds);
 
                 Balances[number] = account.State.Balance;
-                //Console.WriteLine($"Write Time: {stopwatch.ElapsedMilliseconds} ms");
             }
         }
     }

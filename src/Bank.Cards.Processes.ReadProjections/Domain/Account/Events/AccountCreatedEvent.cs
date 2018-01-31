@@ -1,4 +1,4 @@
-﻿namespace Bank.Cards.Domain.Account.Events
+﻿namespace Bank.Cards.Processes.ReadProjections.Domain.Account.Events
 {
     using Infrastructure.Domain;
 
