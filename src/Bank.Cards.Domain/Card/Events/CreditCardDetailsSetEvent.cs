@@ -2,7 +2,7 @@
 {
     using Infrastructure.Domain;
 
-    [EventName("CreditCardDetailsSet")]
+    [EventType("CreditCardDetailsSet")]
     public class CreditCardDetailsSetEvent : CreditCardDomainEvent
     {
         public string NameOnCard { get; set; }

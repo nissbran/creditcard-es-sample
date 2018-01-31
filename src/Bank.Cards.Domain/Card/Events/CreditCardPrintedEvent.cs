@@ -2,7 +2,7 @@
 {
     using Infrastructure.Domain;
 
-    [EventName("CardPrinted")]
+    [EventType("CardPrinted")]
     public class CreditCardPrintedEvent : CreditCardDomainEvent
     {
         

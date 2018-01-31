@@ -81,9 +81,7 @@
 
         private static async Task EventAppeared(EventStorePersistentSubscriptionBase eventStorePersistentSubscriptionBase, ResolvedEvent resolvedEvent)
         {
-            var domainEvent = ConvertEventDataToDomainEvent(resolvedEvent);
-            var accountEvent = domainEvent as AccountDomainEvent;
-
+            var accountEvent = ConvertEventDataToAccountDomainEvent(resolvedEvent);
             if (accountEvent == null)
                 return;
 
@@ -118,13 +116,21 @@
             await _stateDbContext.SaveChangesAsync();
         }
 
-        private static IDomainEvent ConvertEventDataToDomainEvent(ResolvedEvent resolvedEvent)
+        private static AccountDomainEvent ConvertEventDataToAccountDomainEvent(ResolvedEvent resolvedEvent)
         {
+            var metadataString = Encoding.UTF8.GetString(resolvedEvent.Event.Metadata);
             var eventString = Encoding.UTF8.GetString(resolvedEvent.Event.Data);
+
+            //var metadata = new DomainMetaDataWrapper(metadataString);
+            var metadata = JsonConvert.DeserializeObject<DomainMetadata>(metadataString, _jsonSerializerSettings);
 
             var eventType = _readSchema.GetDomainEventType(resolvedEvent.Event.EventType);
 
-            return (IDomainEvent)JsonConvert.DeserializeObject(eventString, eventType, _jsonSerializerSettings);
+            var domainEvent = (IDomainEvent)JsonConvert.DeserializeObject(eventString, eventType, _jsonSerializerSettings);
+            domainEvent.StreamId = metadata.StreamId;
+            domainEvent.Version = metadata.Version;
+
+            return (AccountDomainEvent) domainEvent;
         }
     }
 }

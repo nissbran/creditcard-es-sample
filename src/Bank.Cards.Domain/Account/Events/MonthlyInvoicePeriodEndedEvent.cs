@@ -2,7 +2,7 @@
 
 namespace Bank.Cards.Domain.Account.Events
 {
-    [EventName("MonthlyInvoicePeriodEnded")]
+    [EventType("MonthlyInvoicePeriodEnded")]
     public class MonthlyInvoicePeriodEndedEvent : AccountDomainEvent
     {
 

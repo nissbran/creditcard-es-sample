@@ -2,7 +2,7 @@
 {
     using Infrastructure.Domain;
 
-    [EventName("AccountCredited")]
+    [EventType("AccountCredited")]
     public class AccountCreditedEvent : AccountDomainEvent
     {
         public decimal Amount { get; set; }

@@ -17,8 +17,8 @@
         {
             var domainEvents = await _eventStore.GetEventsByStreamId(new AccountEventStreamId(cardId));
 
-            //if (domainEvents.Count == 0)
-            //    return null;
+            if (domainEvents.Count == 0)
+                return null;
 
             return new Account(domainEvents);
         }

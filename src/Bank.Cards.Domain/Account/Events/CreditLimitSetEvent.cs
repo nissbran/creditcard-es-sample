@@ -2,7 +2,7 @@
 {
     using Infrastructure.Domain;
 
-    [EventName("CreditLimitSet")]
+    [EventType("CreditLimitSet")]
     public class CreditLimitSetEvent : AccountDomainEvent
     {
         public decimal CreditLimit { get; set; }

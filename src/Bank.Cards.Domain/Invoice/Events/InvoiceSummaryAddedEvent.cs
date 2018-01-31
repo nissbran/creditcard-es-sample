@@ -2,7 +2,7 @@
 {
     using Infrastructure.Domain;
 
-    [EventName("InvoiceSummaryAdded")]
+    [EventType("InvoiceSummaryAdded")]
     public class InvoiceSummaryAddedEvent : InvoiceDomainEvent
     {
         public decimal TotalAmountToPay { get; set; }

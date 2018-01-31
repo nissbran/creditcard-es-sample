@@ -3,7 +3,7 @@
     using System;
     using Infrastructure.Domain;
 
-    [EventName("InvoiceCreated")]
+    [EventType("InvoiceCreated")]
     public class InvoiceCreatedEvent : InvoiceDomainEvent
     {
         public Guid InvoiceId { get; set; }

@@ -2,7 +2,7 @@
 {
     using Infrastructure.Domain;
 
-    [EventName("IssuerInformationSet")]
+    [EventType("IssuerInformationSet")]
     public class IssuerInformationSetEvent : AccountDomainEvent
     {
         public long IssuerId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Bank.Cards.Domain.Account.Events
 {
-    [EventName("AccountSnapShot")]
+    [EventType("AccountSnapShot")]
     public class AccountSnapShot : AccountDomainEvent, ISnapshot
     {
         public long SnapshotStreamVersion { get; set; }

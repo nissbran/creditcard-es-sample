@@ -9,6 +9,6 @@
 
         Type GetDomainEventType(string eventType);
 
-        string GetEventDefinition(IDomainEvent domainEvent);
+        EventDefinition GetEventDefinition(IDomainEvent domainEvent);
     }
 }

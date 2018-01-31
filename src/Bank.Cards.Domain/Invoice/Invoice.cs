@@ -51,8 +51,6 @@
                     break;
                 case InvoiceSummaryAddedEvent InvoiceSummaryAddedEvent:
                     break;
-                default:
-                    throw new NotImplementedException();
             }
         }
     }

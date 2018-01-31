@@ -20,6 +20,12 @@
             set => _json["streamId"] = value;
         }
 
+        public int Version
+        {
+            get => _json["version"].Value<int>();
+            set => _json["version"] = value;
+        }
+        
         public string Schema
         {
             get => _json["schema"].Value<string>();

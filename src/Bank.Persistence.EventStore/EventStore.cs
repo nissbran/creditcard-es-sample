@@ -32,7 +32,8 @@
 
             _jsonSerializerSettings = new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore
             };
         }
 
@@ -142,8 +143,8 @@
             var metadataString = Encoding.UTF8.GetString(resolvedEvent.Event.Metadata);
             var eventString = Encoding.UTF8.GetString(resolvedEvent.Event.Data);
 
-            var metadata = new DomainMetaDataWrapper(metadataString);
-            //var metadata = JsonConvert.DeserializeObject<DomainMetadata>(metadataString, _jsonSerializerSettings);
+            //var metadata = new DomainMetaDataWrapper(metadataString);
+            var metadata = JsonConvert.DeserializeObject<DomainMetadata>(metadataString, _jsonSerializerSettings);
 
             _eventSchemas.TryGetValue(metadata.Schema, out var schema);
 
@@ -151,6 +152,7 @@
 
             var domainEvent = (IDomainEvent)JsonConvert.DeserializeObject(eventString, eventType, _jsonSerializerSettings);
             domainEvent.StreamId = metadata.StreamId;
+            domainEvent.Version = metadata.Version;
 
             return domainEvent;
         }
@@ -166,6 +168,7 @@
             {
                 CorrelationId = commitId,
                 StreamId = domainEvent.StreamId,
+                Version = definition.LatestVersion,
                 Schema = domainEvent.Schema,
                 Created = DateTimeOffset.UtcNow
             }.ToString();
@@ -179,7 +182,7 @@
             var data = Encoding.UTF8.GetBytes(dataJson);
             var metadata = Encoding.UTF8.GetBytes(metadataJson);
 
-            return new EventData(Guid.NewGuid(), definition, true, data, metadata);
+            return new EventData(Guid.NewGuid(), definition.EventName, true, data, metadata);
         }
 
         private class Snapshot : ISnapshot

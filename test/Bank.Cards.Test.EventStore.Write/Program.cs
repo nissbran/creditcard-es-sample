@@ -115,7 +115,8 @@
                     {
                         account.AddEvent(new AccountDebitedEvent
                         {
-                            Amount = 1
+                            Amount = 10,
+                            VatAmount = 2.5m
                         });
                     }
 

@@ -9,7 +9,7 @@
     public abstract class EventSchema<TBaseEvent> : IEventSchema where TBaseEvent : IDomainEvent
     {
         private readonly Dictionary<string, Type> _definitionToType = new Dictionary<string, Type>();
-        private readonly Dictionary<Type, string> _typeToDefinition = new Dictionary<Type, string>();
+        private readonly Dictionary<Type, EventDefinition> _typeToDefinition = new Dictionary<Type, EventDefinition>();
 
         public abstract string Name { get; }
 
@@ -21,10 +21,10 @@
 
             foreach (var type in types)
             {
-                if (type.GetTypeInfo().GetCustomAttribute(typeof(EventNameAttribute)) is EventNameAttribute eventName)
+                if (type.GetTypeInfo().GetCustomAttribute(typeof(EventTypeAttribute)) is EventTypeAttribute eventType)
                 {
-                    _definitionToType.Add(eventName.Name, type);
-                    _typeToDefinition.Add(type, eventName.Name);
+                    _definitionToType.Add(new EventDefinition(eventType.Name, eventType.Version), type);
+                    _typeToDefinition.Add(type, new EventDefinition(eventType.Name, eventType.Version));
                 }
             }
         }
@@ -33,13 +33,13 @@
         {
             var eventDefinition = new EventDefinition(eventType);
 
-            if (_definitionToType.TryGetValue(eventType, out var domainEvent))
+            if (_definitionToType.TryGetValue(eventDefinition.EventName, out var domainEvent))
                 return domainEvent;
 
             return null;
         }
 
-        public string GetEventDefinition(IDomainEvent domainEvent)
+        public EventDefinition GetEventDefinition(IDomainEvent domainEvent)
         {
             if (_typeToDefinition.TryGetValue(domainEvent.GetType(), out var eventDefinition))
                 return eventDefinition;

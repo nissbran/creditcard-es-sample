@@ -21,7 +21,7 @@
 
             During(InProcess,
                     When(AccountDebited)
-                        .Execute(context => new AddDebitTransactionToInvoice()),
+                        .Execute(context => new AddDebitTransactionToInvoice(invoiceDomainRepository)),
                     When(MonthlyInvoicePeriodEnded)
                         .Execute(context => new FinishMonthlyInvoice(invoiceDomainRepository)));
         }

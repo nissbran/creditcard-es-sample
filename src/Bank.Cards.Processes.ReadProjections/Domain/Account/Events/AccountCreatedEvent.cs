@@ -2,7 +2,7 @@
 {
     using Infrastructure.Domain;
 
-    [EventName("AccountCreated")]
+    [EventType("AccountCreated")]
     public class AccountCreatedEvent : AccountDomainEvent
     {
         public string CurrencyIso { get; set; }

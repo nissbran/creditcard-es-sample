@@ -10,6 +10,9 @@
         public string StreamId { get; set; }
 
         [JsonIgnore]
+        public int Version { get; set; }
+
+        [JsonIgnore]
         public string Schema => CreditCardSchema.SchemaName;
 
         [JsonIgnore]

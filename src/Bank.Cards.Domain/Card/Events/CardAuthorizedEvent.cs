@@ -3,7 +3,7 @@
     using System;
     using Infrastructure.Domain;
 
-    [EventName("CardAuthorized")]
+    [EventType("CardAuthorized")]
     public class CardAuthorizedEvent
     {
         public decimal ReservedAmount { get; set; }

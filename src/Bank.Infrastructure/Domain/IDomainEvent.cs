@@ -4,6 +4,8 @@
     {
         string StreamId { get; set; }
 
+        int Version { get; set; }
+
         string Schema { get; }
 
         IDomainMetaData Metadata { get; set; }

@@ -3,7 +3,7 @@
     using System;
     using Infrastructure.Domain;
 
-    [EventName("CreditCardConnectedToAccount")]
+    [EventType("CreditCardConnectedToAccount")]
     public class CreditCardConnectedToAccountEvent : CreditCardDomainEvent
     {
         public Guid AccountId { get; set; }

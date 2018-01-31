@@ -7,5 +7,7 @@
         public Guid AccountId { get; set; }
 
         public decimal CurrentBalance { get; set; }
+
+        public decimal CurrentVatBalance { get; set; }
     }
 }

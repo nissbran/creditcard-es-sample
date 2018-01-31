@@ -34,7 +34,7 @@
                     Console.WriteLine($"Event count: {_count}");
                     foreach (var accountBalance in _accountBalances)
                     {
-                        Console.WriteLine($"Stream: {accountBalance.Key}, Balance: {accountBalance.Value.CurrentBalance}");
+                        Console.WriteLine($"Stream: {accountBalance.Key}, Balance: {accountBalance.Value.CurrentBalance}, Vat: {accountBalance.Value.CurrentVatBalance}");
                     }
                 }
             });
@@ -64,6 +64,14 @@
             {
                 case AccountDebitedEvent debitedEvent:
                     balance.CurrentBalance -= debitedEvent.Amount;
+                    if (debitedEvent.Version < 2)
+                    {
+                        balance.CurrentVatBalance -= 2.5m;
+                    }
+                    else
+                    {
+                        balance.CurrentVatBalance -= debitedEvent.VatAmount;
+                    }
                     break;
                 case AccountCreditedEvent creditedEvent:
                     balance.CurrentBalance -= creditedEvent.Amount;
@@ -88,6 +96,7 @@
                 var eventString = Encoding.UTF8.GetString(resolvedEvent.Event.Data);
                 var accountEvent = (AccountDomainEvent)JsonConvert.DeserializeObject(eventString, eventType, _jsonSerializerSettings);
                 accountEvent.StreamId = metadata.StreamId;
+                accountEvent.Version = metadata.Version;
 
                 return accountEvent;
             }

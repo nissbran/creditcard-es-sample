@@ -2,7 +2,7 @@
 {
     using Infrastructure.Domain;
 
-    [EventName("InvoiceAddressAdded")]
+    [EventType("InvoiceAddressAdded")]
     public class InvoiceAddressAddedEvent : InvoiceDomainEvent
     {
         public string Name { get; set; }

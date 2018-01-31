@@ -3,7 +3,7 @@
     using System;
     using Infrastructure.Domain;
 
-    [EventName("CreditCardCreated")]
+    [EventType("CreditCardCreated")]
     public class CreditCardCreatedEvent : CreditCardDomainEvent
     {
         public string EncryptedPan { get; set; }
