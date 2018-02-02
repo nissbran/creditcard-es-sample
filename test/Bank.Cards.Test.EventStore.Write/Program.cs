@@ -18,22 +18,22 @@
         private static Bank.Persistence.EventStore.EventStore _eventStore;
         private static AccountSnapshotRepository _accountSnapshotRepository;
 
-        private static readonly decimal[] Balances = new decimal[10];
+        private const int NumberOfStreams = 50;
+        private static readonly decimal[] Balances = new decimal[NumberOfStreams];
 
-        private static ConcurrentBag<long>[] ReadTimings = CreateTimingsArray();
+        private static ConcurrentBag<long>[] ReadTimings = CreateTimingsArray(NumberOfStreams);
 
-        private static ConcurrentBag<long>[] WriteTimings = CreateTimingsArray();
+        private static ConcurrentBag<long>[] WriteTimings = CreateTimingsArray(NumberOfStreams);
 
-        private static ConcurrentBag<long>[] CreateTimingsArray()
+        private static ConcurrentBag<long>[] CreateTimingsArray(int number)
         {
-            return new[]
+            var list = new ConcurrentBag<long>[number];
+            for (int i = 0; i < number; i++)
             {
-                new ConcurrentBag<long>(),
-                new ConcurrentBag<long>(),
-                new ConcurrentBag<long>(),
-                new ConcurrentBag<long>(),
-                new ConcurrentBag<long>(),
-            };
+                list[i] = new ConcurrentBag<long>();
+            }
+
+            return list;
         }
 
         static async Task Main(string[] args)
@@ -51,9 +51,9 @@
             });
             _accountSnapshotRepository = new AccountSnapshotRepository(_eventStore);
 
-            var tasks = new Task[5];
+            var tasks = new Task[NumberOfStreams];
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < NumberOfStreams; i++)
             {
                 var number = i;
                 tasks[i] = Task.Run(async () => { await CreateStreams(number); });
@@ -71,29 +71,33 @@
 
                     for (int i = 0; i < 5; i++)
                     {
-                        var readTimings = Math.Floor(ReadTimings[i].Average());
-                        var writeTimings = Math.Floor(WriteTimings[i].Average());
+                        double readTimings = 0;
+                        if (!ReadTimings[i].IsEmpty)
+                             readTimings = Math.Floor(ReadTimings[i].Average());
+                        double writeTimings = 0;
+                        if (!WriteTimings[i].IsEmpty)
+                            writeTimings = Math.Floor(WriteTimings[i].Average());
 
                         Console.WriteLine($"Stream: {i}, Balance: {Balances[i]}, Read: {readTimings} ms, Write: {writeTimings} ms");
                     }
 
-                    ReadTimings = CreateTimingsArray();
-                    WriteTimings = CreateTimingsArray();
+                    ReadTimings = CreateTimingsArray(NumberOfStreams);
+                    WriteTimings = CreateTimingsArray(NumberOfStreams);
                 }
             });
 
             await Task.WhenAll(tasks);
-            
+
             Console.ReadLine();
         }
 
         private static async Task CreateStreams(int number)
         {
-            var id = Guid.Parse($"42a11f29-4578-4d19-b1ec-544260ea401{number}");
+            var id = Guid.Parse($"42a11f29-4578-4d19-b1ec-544260ea40{number:D2}");
 
             var stopwatch = new Stopwatch();
 
-            for (int i = 0; i <= 2000; i++)
+            for (int i = 0; i < 11; i++)
             {
                 //var repository2 = new AccountRepository(eventStore);
 
@@ -109,22 +113,26 @@
                 {
                     account = new Account(id);
                 }
-                else
-                {
-                    for (int y = 0; y <= 100; y++)
-                    {
-                        account.AddEvent(new AccountDebitedEvent
-                        {
-                            Amount = 10,
-                            VatAmount = 2.5m
-                        });
-                    }
 
-                    if (i > 0 &&
-                        i % 50 == 0)
+                for (int y = 0; y < 100; y++)
+                {
+                    account.AddEvent(new AccountDebitedEvent
                     {
-                        account.AddEvent(new MonthlyInvoicePeriodEndedEvent());
-                    }
+                        Amount = 10,
+                        AmountExcl = 7.5m,
+                        VatAmount = 2.5m
+                    });
+                    //account.AddEvent(new AccountDebitedEvent2
+                    //{
+                    //    AmountExcl = 7.5m,
+                    //    VatAmount = 2.5m
+                    //});
+                }
+
+                if (i > 0 &&
+                    i % 5 == 0)
+                {
+                    account.AddEvent(new MonthlyInvoicePeriodEndedEvent());
                 }
 
                 await _accountSnapshotRepository.SaveAccount(account);

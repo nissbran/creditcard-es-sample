@@ -55,6 +55,9 @@
                 case AccountDebitedEvent accountDebitedEvent:
                     State.Balance -= accountDebitedEvent.Amount;
                     break;
+                case AccountDebitedEvent2 accountDebitedEvent2:
+                    State.Balance -= (accountDebitedEvent2.AmountExcl + accountDebitedEvent2.VatAmount);
+                    break;
                 case AccountCreditedEvent accountCreditedEvent:
                     State.Balance += accountCreditedEvent.Amount;
                     break;

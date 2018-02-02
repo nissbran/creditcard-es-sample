@@ -3,7 +3,7 @@
     using Infrastructure.Domain;
 
     [EventType("CreditLimitSet")]
-    public class CreditLimitSetEvent : AccountDomainEvent
+    public class CreditLimitChangedEvent : AccountDomainEvent
     {
         public decimal CreditLimit { get; set; }
     }

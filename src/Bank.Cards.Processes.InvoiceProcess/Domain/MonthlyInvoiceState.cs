@@ -10,6 +10,8 @@
 
         public int CurrentState { get; set; }
 
+        public long AccountStreamVersion { get; set; } = -1;
+
         public decimal TotalAmountToPay { get; set; }
     }
 }

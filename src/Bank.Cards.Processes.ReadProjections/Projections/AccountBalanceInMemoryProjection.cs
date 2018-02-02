@@ -73,6 +73,10 @@
                         balance.CurrentVatBalance -= debitedEvent.VatAmount;
                     }
                     break;
+                case AccountDebitedEvent2 debitedEvent2:
+                    balance.CurrentBalance -= (debitedEvent2.AmountExcl + debitedEvent2.VatAmount);
+                    balance.CurrentVatBalance -= debitedEvent2.VatAmount;
+                    break;
                 case AccountCreditedEvent creditedEvent:
                     balance.CurrentBalance -= creditedEvent.Amount;
                     break;

@@ -44,7 +44,11 @@
 
         public async Task<IList<IDomainEvent>> GetEventsBySnapshotStreamId(SnapshotEventStreamId snapshotEventStreamId)
         {
-            var readSlice = await _connection.ReadStreamEventsBackwardAsync(snapshotEventStreamId.SnapshotStreamName, StreamPosition.End, 1, false);
+            var readSlice = await _connection.ReadStreamEventsBackwardAsync(
+                stream: snapshotEventStreamId.SnapshotStreamName,
+                start: StreamPosition.End, 
+                count: 1, 
+                resolveLinkTos: false);
 
             var streamEvents = new List<IDomainEvent>();
 

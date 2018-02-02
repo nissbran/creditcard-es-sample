@@ -17,5 +17,8 @@
 
         [JsonIgnore]
         public IDomainMetaData Metadata { get; set; }
+
+        [JsonIgnore]
+        public long EventNumber { get; set; }
     }
 }
