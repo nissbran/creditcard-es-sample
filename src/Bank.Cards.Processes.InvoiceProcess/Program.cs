@@ -34,6 +34,7 @@
         };
 
         private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> Locks = new ConcurrentDictionary<Guid, SemaphoreSlim>();
+        private static readonly Dictionary<Guid, MonthlyInvoiceState> InMemoryStateDictionary = new Dictionary<Guid, MonthlyInvoiceState>();
 
         private static StateDbContext _stateDbContext;
         private static IEventStoreConnection _subscriptionConnection;
@@ -62,12 +63,8 @@
             });
             _repository = new InvoiceRepository(_eventStore);
 
-            await StartMultipleSubscriptions();
-
-            //await eventStoreSubscriptionConnection.ConnectToPersistentSubscriptionAsync("$ce-Account", "InvoiceGeneration", EventAppeared);
-            //await eventStoreSubscriptionConnection.ConnectToPersistentSubscriptionAsync("$ce-Account", "InvoiceGeneration", EventAppeared);
-            //await eventStoreSubscriptionConnection.ConnectToPersistentSubscriptionAsync("$ce-Account", "InvoiceGeneration", EventAppeared);
-            //await eventStoreSubscriptionConnection.ConnectToPersistentSubscriptionAsync("$ce-Account", "InvoiceGeneration", EventAppeared);
+            //await StartMultipleSubscriptions();
+            await StartCategoryGeneration();
 
             Console.ReadLine();
         }
@@ -177,6 +174,30 @@
         }
 
         private static async Task RaiseStateEvent<T>(MonthlyInvoiceStateMachine stateMachine, Event<T> stateEvent, T data) where T : AccountDomainEvent
+        {
+            await RaiseStateEventWithSqlState(stateMachine, stateEvent, data);
+            //await RaiseStateEventWithInMemoryState(stateMachine, stateEvent, data);
+        }
+
+        private static async Task RaiseStateEventWithInMemoryState<T>(MonthlyInvoiceStateMachine stateMachine, Event<T> stateEvent, T data) where T : AccountDomainEvent
+        {
+            var state = InMemoryStateDictionary.GetValueOrDefault(Guid.Parse(data.StreamId), null);
+
+            if (state == null)
+            {
+                state = new MonthlyInvoiceState();
+                InMemoryStateDictionary.Add(Guid.Parse(data.StreamId), state);
+            }
+
+            if (state.AccountStreamVersion > data.EventNumber)
+                return;
+
+            state.AccountStreamVersion = data.EventNumber;
+
+            await stateMachine.RaiseEvent(state, stateEvent, data);
+        }
+
+        private static async Task RaiseStateEventWithSqlState<T>(MonthlyInvoiceStateMachine stateMachine, Event<T> stateEvent, T data) where T : AccountDomainEvent
         {
             using (var context = new StateDbContext())
             {

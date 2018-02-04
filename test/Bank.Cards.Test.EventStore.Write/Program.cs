@@ -18,7 +18,7 @@
         private static Bank.Persistence.EventStore.EventStore _eventStore;
         private static AccountSnapshotRepository _accountSnapshotRepository;
 
-        private const int NumberOfStreams = 50;
+        private const int NumberOfStreams = 5;
         private static readonly decimal[] Balances = new decimal[NumberOfStreams];
 
         private static ConcurrentBag<long>[] ReadTimings = CreateTimingsArray(NumberOfStreams);
@@ -97,7 +97,7 @@
 
             var stopwatch = new Stopwatch();
 
-            for (int i = 0; i < 11; i++)
+            for (int i = 0; i < 2000; i++)
             {
                 //var repository2 = new AccountRepository(eventStore);
 

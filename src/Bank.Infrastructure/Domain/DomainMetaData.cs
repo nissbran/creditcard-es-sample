@@ -6,6 +6,8 @@
     {
         public Guid CorrelationId { get; set; }
 
+        public Guid CausationId { get; set; }
+
         public string StreamId { get; set; }
 
         public int Version { get; set; }

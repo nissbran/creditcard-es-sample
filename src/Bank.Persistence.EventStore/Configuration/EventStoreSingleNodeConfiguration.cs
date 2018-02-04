@@ -6,10 +6,14 @@
         public string SingleNodeConnectionUri { get; }
         public IEventStoreClusterConfiguration ClusterConfiguration { get; }
 
-        public EventStoreSingleNodeConfiguration()
+        public EventStoreSingleNodeConfiguration() : this(1113)
+        {
+        }
+
+        public EventStoreSingleNodeConfiguration(int port)
         {
             UseSingleNode = true;
-            SingleNodeConnectionUri = "tcp://localhost:1113";
+            SingleNodeConnectionUri = $"tcp://localhost:{port}";
             ClusterConfiguration = null;
         }
     }

@@ -7,6 +7,8 @@ namespace Bank.Cards.Domain.Account.Events
     {
         public long SnapshotStreamVersion { get; set; }
 
+        public string AccountNumber { get; set; }
+
         public decimal Balance { get; set; }
     }
 }

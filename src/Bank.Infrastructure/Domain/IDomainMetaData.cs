@@ -6,6 +6,8 @@
     {
         Guid CorrelationId { get; set; }
 
+        Guid CausationId { get; set; }
+
         string StreamId { get; set; }
 
         int Version { get; set; }

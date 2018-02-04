@@ -19,7 +19,7 @@
         public Account(Guid id)
         {
             Id = id.ToString();
-            AddEvent(new AccountCreatedEvent());
+            AddEvent(new AccountCreatedEvent { AccountNumber = "Test" });
         }
 
         public Account(IEnumerable<IDomainEvent> historicEvents)
@@ -50,6 +50,7 @@
                     break;
                 case AccountSnapShot snapshot:
                     State.Balance = snapshot.Balance;
+                    State.AccountNumber = snapshot.AccountNumber;
                     StreamVersion = snapshot.SnapshotStreamVersion - 1;
                     break;
                 case AccountDebitedEvent accountDebitedEvent:

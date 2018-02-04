@@ -8,8 +8,6 @@
     {
         public string EncryptedPan { get; set; }
 
-        public string HashedPan { get; set; }
-
         public DateTimeOffset ExpiryDate { get; set; }
     }
 }
