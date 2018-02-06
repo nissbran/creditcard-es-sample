@@ -82,6 +82,7 @@
                 await _eventStore.SaveSnapshot(new AccountEventStreamId(account.Id), new AccountSnapShot()
                 {
                     Balance = account.State.Balance,
+                    AccountNumber = account.State.AccountNumber,
                     StreamId = account.Id,
                     SnapshotStreamVersion = account.StreamVersion
                 });

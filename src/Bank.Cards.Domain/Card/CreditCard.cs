@@ -20,10 +20,7 @@
         {
             Id = hashedPan;
 
-            AddEvent(new CreditCardCreatedEvent
-            {
-                HashedPan = hashedPan
-            });
+            AddEvent(new CreditCardCreatedEvent());
         }
         
         public CreditCard(IEnumerable<IDomainEvent> historicEvents)

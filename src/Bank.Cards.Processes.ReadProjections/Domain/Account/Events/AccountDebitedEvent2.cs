@@ -2,12 +2,12 @@
 {
     using Infrastructure.Domain;
 
-    [EventType("AccountDebited")]
-    public class AccountDebitedEvent : AccountDomainEvent
+    [EventType("AccountDebited_V2")]
+    public class AccountDebitedEvent2 : AccountDomainEvent
     {
-        public decimal Amount { get; set; }
+       // public decimal Amount { get; set; }
 
-        
+        public decimal AmountExcl { get; set; }
 
         public decimal VatAmount { get; set; }
 

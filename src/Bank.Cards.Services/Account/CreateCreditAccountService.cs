@@ -23,7 +23,7 @@
             {
                 IssuerId = creditAccountInfo.IssuerId
             });
-            account.AddEvent(new CreditLimitSetEvent
+            account.AddEvent(new CreditLimitChangedEvent
             {
                 CreditLimit = creditAccountInfo.CreditLimit
             });

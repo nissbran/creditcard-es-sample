@@ -14,6 +14,12 @@
             set => _json["correlationId"] = value.ToString();
         }
 
+        public Guid CausationId
+        {
+            get => _json["causationId"].Value<Guid>();
+            set => _json["causationId"] = value;
+        }
+
         public string StreamId
         {
             get => _json["streamId"].Value<string>();

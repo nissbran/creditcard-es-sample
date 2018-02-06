@@ -44,7 +44,11 @@
 
         public async Task<IList<IDomainEvent>> GetEventsBySnapshotStreamId(SnapshotEventStreamId snapshotEventStreamId)
         {
-            var readSlice = await _connection.ReadStreamEventsBackwardAsync(snapshotEventStreamId.SnapshotStreamName, StreamPosition.End, 1, false);
+            var readSlice = await _connection.ReadStreamEventsBackwardAsync(
+                stream: snapshotEventStreamId.SnapshotStreamName,
+                start: StreamPosition.End, 
+                count: 1, 
+                resolveLinkTos: false);
 
             var streamEvents = new List<IDomainEvent>();
 
@@ -162,11 +166,13 @@
             _eventSchemas.TryGetValue(domainEvent.Schema, out var schema);
 
             var definition = schema.GetEventDefinition(domainEvent);
+            var eventId = Guid.NewGuid();
 
             var dataJson = JsonConvert.SerializeObject(domainEvent, _jsonSerializerSettings);
             var metadataJson = new DomainMetaDataWrapper
             {
                 CorrelationId = commitId,
+                CausationId = eventId,
                 StreamId = domainEvent.StreamId,
                 Version = definition.LatestVersion,
                 Schema = domainEvent.Schema,
@@ -182,7 +188,7 @@
             var data = Encoding.UTF8.GetBytes(dataJson);
             var metadata = Encoding.UTF8.GetBytes(metadataJson);
 
-            return new EventData(Guid.NewGuid(), definition.EventName, true, data, metadata);
+            return new EventData(eventId, definition.EventName, true, data, metadata);
         }
 
         private class Snapshot : ISnapshot
