@@ -1,16 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="SqlStreamStore.MsSql" Version="1.1.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Bank.Infrastructure\Bank.Infrastructure.csproj" />
   </ItemGroup>
-
 </Project>

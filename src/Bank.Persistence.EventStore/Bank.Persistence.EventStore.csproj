@@ -1,15 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="EventStore.ClientAPI.NetCore" Version="4.0.3-rc" />
+    <PackageReference Include="EventStore.ClientAPI.NetCore" Version="4.1.0.23" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Bank.Infrastructure\Bank.Infrastructure.csproj" />
   </ItemGroup>
-
 </Project>

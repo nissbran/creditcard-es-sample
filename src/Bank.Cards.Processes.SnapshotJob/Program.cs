@@ -34,7 +34,7 @@
             await eventStoreSubscriptionConnection.ConnectAsync();
             await eventStoreWriteConnection.ConnectAsync();
 
-            _eventStore = new Bank.Persistence.EventStore.EventStore(eventStoreWriteConnection, new List<IEventSchema>
+            _eventStore = new Bank.Persistence.EventStore.EventStore(eventStoreSubscriptionConnection, new List<IEventSchema>
             {
                 new AccountSchema()
             });
