@@ -14,6 +14,7 @@
     using Infrastructure.EventStore;
     using Newtonsoft.Json;
     using Persistence.EventStore.Configuration;
+    using Utf8Json.Resolvers;
 
     class Program
     {
@@ -22,6 +23,8 @@
 
         static async Task Main(string[] args)
         {
+            Utf8Json.JsonSerializer.SetDefaultResolver(StandardResolver.AllowPrivateCamelCase);
+
             var eventStoreSubscriptionConnection = EventStoreConnectionFactory.Create(
                 new EventStoreSingleNodeConfiguration(),
                 new ConsoleLogger(),
@@ -71,8 +74,10 @@
             if (resolvedEvent.Event.EventNumber > 0 &&
                 resolvedEvent.Event.EventNumber % 500 == 0)
             {
-                var metaJsonData = Encoding.UTF8.GetString(resolvedEvent.Event.Metadata);
-                var eventMetaData = JsonConvert.DeserializeObject<DomainMetadata>(metaJsonData);
+                //var metaJsonData = Encoding.UTF8.GetString(resolvedEvent.Event.Metadata);
+                //var eventMetaData = JsonConvert.DeserializeObject<DomainMetadata>(metaJsonData);
+
+                var eventMetaData = Utf8Json.JsonSerializer.Deserialize<DomainMetadata>(resolvedEvent.Event.Metadata);
 
                 if (eventMetaData.Schema != AccountSchema.SchemaName)
                     return;

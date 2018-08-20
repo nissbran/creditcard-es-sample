@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bank.Cards.Processes.Snapsh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bank.Cards.Processes.InvoiceProcess", "src\Bank.Cards.Processes.InvoiceProcess\Bank.Cards.Processes.InvoiceProcess.csproj", "{1EFE2819-E466-4CA2-87DB-DB790CE6600A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bank.Cards.Processes.SubscriptionTests", "Bank.Cards.Processes.SubscriptionTests\Bank.Cards.Processes.SubscriptionTests.csproj", "{D4CC5C32-8D3A-41BB-9691-E49FBF981010}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{1EFE2819-E466-4CA2-87DB-DB790CE6600A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EFE2819-E466-4CA2-87DB-DB790CE6600A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EFE2819-E466-4CA2-87DB-DB790CE6600A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4CC5C32-8D3A-41BB-9691-E49FBF981010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4CC5C32-8D3A-41BB-9691-E49FBF981010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4CC5C32-8D3A-41BB-9691-E49FBF981010}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4CC5C32-8D3A-41BB-9691-E49FBF981010}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +100,7 @@ Global
 		{6984A36D-4432-4380-BD3A-014C5B9992C0} = {E5E2882E-2DF5-45D2-AEDB-2574C19ADBA6}
 		{4CA93E6B-FB8F-440A-B325-6D4FB4EA69F9} = {4D8360A5-3938-483B-B602-2102C64427F7}
 		{1EFE2819-E466-4CA2-87DB-DB790CE6600A} = {4D8360A5-3938-483B-B602-2102C64427F7}
+		{D4CC5C32-8D3A-41BB-9691-E49FBF981010} = {4D8360A5-3938-483B-B602-2102C64427F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6463E494-EDEA-4D1B-A499-9BF332E6B01B}

@@ -18,8 +18,9 @@
         private static Bank.Persistence.EventStore.EventStore _eventStore;
         private static AccountSnapshotRepository _accountSnapshotRepository;
 
-        private const int NumberOfStreams = 5;
+        private const int NumberOfStreams = 200;
         private static readonly decimal[] Balances = new decimal[NumberOfStreams];
+        private static readonly Guid[] Ids = new Guid[NumberOfStreams];
 
         private static ConcurrentBag<long>[] ReadTimings = CreateTimingsArray(NumberOfStreams);
 
@@ -56,6 +57,7 @@
             for (int i = 0; i < NumberOfStreams; i++)
             {
                 var number = i;
+                Ids[i] = Guid.NewGuid();
                 tasks[i] = Task.Run(async () => { await CreateStreams(number); });
             }
 
@@ -93,11 +95,12 @@
 
         private static async Task CreateStreams(int number)
         {
-            var id = Guid.Parse($"42a11f29-4578-4d19-b1ec-544260ea40{number:D2}");
-
+            //var id = Guid.Parse($"42a11f29-4578-4d19-b1ec-544260ea{number:D4}");
+            var id = Ids[number];
+            
             var stopwatch = new Stopwatch();
 
-            for (int i = 0; i < 2000; i++)
+            for (int i = 0; i < 20; i++)
             {
                 //var repository2 = new AccountRepository(eventStore);
 
@@ -140,6 +143,8 @@
                 WriteTimings[number].Add(stopwatch.ElapsedMilliseconds);
 
                 Balances[number] = account.State.Balance;
+
+                await Task.Delay(5000);
             }
         }
     }

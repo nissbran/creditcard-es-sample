@@ -14,6 +14,7 @@ namespace Bank.Persistence.EventStore.Configuration
             var connectionSettings = ConnectionSettings.Create()
                 .FailOnNoServerResponse()
                 .UseCustomLogger(customerLogger)
+                //.EnableVerboseLogging()
                 .KeepReconnecting()
                 .KeepRetrying()
                 .SetMaxDiscoverAttempts(int.MaxValue)

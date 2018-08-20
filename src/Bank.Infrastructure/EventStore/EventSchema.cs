@@ -31,12 +31,15 @@
 
         public Type GetDomainEventType(string eventType)
         {
-            var eventDefinition = new EventDefinition(eventType);
-
-            if (_definitionToType.TryGetValue(eventDefinition.EventName, out var domainEvent))
+            if (_definitionToType.TryGetValue(eventType, out var domainEvent))
                 return domainEvent;
 
             return null;
+        }
+
+        public bool EventTypeExistInSchema(string eventType)
+        {
+            return _definitionToType.ContainsKey(eventType);
         }
 
         public EventDefinition GetEventDefinition(IDomainEvent domainEvent)

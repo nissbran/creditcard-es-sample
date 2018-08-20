@@ -9,5 +9,7 @@
         public decimal CurrentBalance { get; set; }
 
         public decimal CurrentVatBalance { get; set; }
+        
+        public long Version { get; set; }
     }
 }

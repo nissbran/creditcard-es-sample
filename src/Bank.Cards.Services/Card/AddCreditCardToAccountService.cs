@@ -41,7 +41,7 @@
 
             newCard.AddEvent(new CreditCardCreatedEvent
             {
-                HashedPan = hashedPan,
+                //HashedPan = hashedPan,
                 EncryptedPan = _panEncryptService.EncryptPan(newPan)
             });
             newCard.AddEvent(new CreditCardDetailsSetEvent

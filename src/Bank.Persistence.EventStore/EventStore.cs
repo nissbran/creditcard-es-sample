@@ -8,18 +8,17 @@
     using Bank.Infrastructure.Domain;
     using Bank.Infrastructure.EventStore;
     using global::EventStore.ClientAPI;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
+    using Utf8Json;
+    using Utf8Json.Resolvers;
 
     public class EventStore : ISnapshotEventStore
     {
         private const long MinStreamVersion = 0;
-        private const int ReadBatchSize = 2000;
-        private const int WriteBatchSize = 4096;
+        private const int ReadBatchSize = 500;
+        private const int WriteBatchSize = 500;
 
         private readonly IEventStoreConnection _connection;
         private readonly Dictionary<string, IEventSchema> _eventSchemas = new Dictionary<string, IEventSchema>();
-        private readonly JsonSerializerSettings _jsonSerializerSettings;
 
         public EventStore(IEventStoreConnection connection, IEnumerable<IEventSchema> eventSchemas)
         {
@@ -30,11 +29,7 @@
                 _eventSchemas.Add(schema.Name, schema);
             }
 
-            _jsonSerializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore
-            };
+            JsonSerializer.SetDefaultResolver(StandardResolver.AllowPrivateCamelCase);
         }
 
         public async Task<IList<IDomainEvent>> GetEventsByStreamId(EventStreamId eventStreamId)
@@ -59,9 +54,8 @@
             else
             {
                 var snapShotEvent = readSlice.Events[0];
-
-                var dataAsJson = Encoding.UTF8.GetString(snapShotEvent.Event.Data);
-                var snapShot = JsonConvert.DeserializeObject<Snapshot>(dataAsJson);
+                
+                var snapShot = JsonSerializer.Deserialize<Snapshot>(snapShotEvent.Event.Data);
 
                 streamEvents.Add(ConvertEventDataToDomainEvent(snapShotEvent));
 
@@ -144,17 +138,13 @@
 
         private IDomainEvent ConvertEventDataToDomainEvent(ResolvedEvent resolvedEvent)
         {
-            var metadataString = Encoding.UTF8.GetString(resolvedEvent.Event.Metadata);
-            var eventString = Encoding.UTF8.GetString(resolvedEvent.Event.Data);
-
-            //var metadata = new DomainMetaDataWrapper(metadataString);
-            var metadata = JsonConvert.DeserializeObject<DomainMetadata>(metadataString, _jsonSerializerSettings);
+            var metadata = JsonSerializer.Deserialize<DomainMetadata>(resolvedEvent.Event.Metadata);
 
             _eventSchemas.TryGetValue(metadata.Schema, out var schema);
 
             var eventType = schema.GetDomainEventType(resolvedEvent.Event.EventType);
 
-            var domainEvent = (IDomainEvent)JsonConvert.DeserializeObject(eventString, eventType, _jsonSerializerSettings);
+            var domainEvent = (IDomainEvent)JsonSerializer.NonGeneric.Deserialize(eventType, resolvedEvent.Event.Data);
             domainEvent.StreamId = metadata.StreamId;
             domainEvent.Version = metadata.Version;
 
@@ -168,8 +158,8 @@
             var definition = schema.GetEventDefinition(domainEvent);
             var eventId = Guid.NewGuid();
 
-            var dataJson = JsonConvert.SerializeObject(domainEvent, _jsonSerializerSettings);
-            var metadataJson = new DomainMetaDataWrapper
+            var data = JsonSerializer.NonGeneric.Serialize(domainEvent);
+            var metadata = JsonSerializer.Serialize(new DomainMetadata
             {
                 CorrelationId = commitId,
                 CausationId = eventId,
@@ -177,17 +167,8 @@
                 Version = definition.LatestVersion,
                 Schema = domainEvent.Schema,
                 Created = DateTimeOffset.UtcNow
-            }.ToString();
-
-
-            //    JsonConvert.SerializeObject(new DomainMetadata
-            //{
-            //    C
-            //}, _jsonSerializerSettings);
-
-            var data = Encoding.UTF8.GetBytes(dataJson);
-            var metadata = Encoding.UTF8.GetBytes(metadataJson);
-
+            });
+            
             return new EventData(eventId, definition.EventName, true, data, metadata);
         }
 

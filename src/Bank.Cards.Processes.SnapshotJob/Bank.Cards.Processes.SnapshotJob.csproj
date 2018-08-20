@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Utf8Json" Version="1.3.7" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Bank.Cards.Domain\Bank.Cards.Domain.csproj" />
     <ProjectReference Include="..\Bank.Persistence.EventStore\Bank.Persistence.EventStore.csproj" />
   </ItemGroup>

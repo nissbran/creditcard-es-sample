@@ -1,4 +1,4 @@
-﻿namespace Bank.Cards.Processes.ReadProjections.Projections
+﻿namespace Bank.Cards.Processes.SubscriptionTests.Projections
 {
     using System.Threading.Tasks;
     using EventStore.ClientAPI;
@@ -6,7 +6,5 @@
     public interface IProjection
     {
         Task ProcessEvent(ResolvedEvent resolvedEvent);
-
-        void QueueEvent(ResolvedEvent resolvedEvent);
     }
 }
